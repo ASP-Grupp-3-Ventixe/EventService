@@ -1,15 +1,14 @@
-# Build stage
+# 1. Bygg-fasen
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["WebApp/WebApp.csproj", "WebApp/"]
-RUN dotnet restore "WebApp/WebApp.csproj"
+COPY ["EventApp/EventApp.csproj", "EventApp/"]
+RUN dotnet restore "EventApp/EventApp.csproj"
 COPY . .
-WORKDIR "/src/WebApp"
-RUN dotnet build "WebApp.csproj" -c Release -o /app/build
-RUN dotnet publish "WebApp.csproj" -c Release -o /app/publish
+WORKDIR "/src/EventApp"
+RUN dotnet publish "EventApp.csproj" -c Release -o /app/publish
 
-# Runtime stage
+# 2. Runtime-fasen
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "WebApp.dll"]
+ENTRYPOINT ["dotnet", "EventApp.dll"]
