@@ -13,7 +13,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
 builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddCors(options =>
@@ -22,7 +21,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
             "http://localhost:5173",
-            "https://localhost:5173" 
+            "https://localhost:5173",
+            "https://<din-render-frontend-url>" // <-- lägg till detta vid behov
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -30,19 +30,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 
-
-
-app.UseStaticFiles(); 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Events API");
-    c.RoutePrefix = ""; 
-});
-    
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.UseCors();
