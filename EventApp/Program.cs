@@ -19,14 +19,19 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173",
-            "https://localhost:5173"
+            "http://localhost:5173", 
+            "https://localhost:5173",
+            "https://kind-coast-0cff2bc03.6.azurestaticapps.net/",
+            "https://ventixe-cave.netlify.app"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
         .AllowCredentials();
     });
 });
+
+
+
 
 var app = builder.Build();
 
@@ -39,6 +44,13 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Event API v1");
         c.RoutePrefix = "swagger";
     });
+
+    app.MapGet("/", context =>
+    {
+        context.Response.Redirect("/swagger");
+        return Task.CompletedTask;
+    });
+
 
 }
 
