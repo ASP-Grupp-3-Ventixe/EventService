@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35828.75
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventApp", "EventApp\EventApp.csproj", "{7B17F42A-DC5B-4C1E-B539-A7D044357DB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventApp.Tests", "EventApp.Tests\EventApp.Tests.csproj", "{59F42492-EEF8-470B-8D60-2B55780EA9F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B17F42A-DC5B-4C1E-B539-A7D044357DB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B17F42A-DC5B-4C1E-B539-A7D044357DB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B17F42A-DC5B-4C1E-B539-A7D044357DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B17F42A-DC5B-4C1E-B539-A7D044357DB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F42492-EEF8-470B-8D60-2B55780EA9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F42492-EEF8-470B-8D60-2B55780EA9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F42492-EEF8-470B-8D60-2B55780EA9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F42492-EEF8-470B-8D60-2B55780EA9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FE7DEF9D-7C15-45C8-B1D8-8105A67CB945}
+	EndGlobalSection
+EndGlobal

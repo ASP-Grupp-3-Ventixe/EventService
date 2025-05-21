@@ -1,0 +1,197 @@
+﻿using EventApp.Entities;
+using EventApp.Interfaces;
+using EventApp.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace EventApp.Services;
+
+public class EventService(AppDbContext context, ILogger<EventService> logger) : IEventService
+{
+    private readonly AppDbContext _context = context;
+    private readonly ILogger<EventService> _logger = logger;
+
+    public async Task<bool> CreateAsync(CreateEventDto model)
+    {
+        try
+        {
+            var entity = new EventEntity
+            {
+                Title = model.Title,
+                Category = model.Category,
+                Date = model.Date,
+                Location = model.Location,
+                Status = model.Status,
+                Progress = model.Progress,
+                Price = model.Price,
+                Description = model.Description,
+            };
+
+            _context.Events.Add(entity);
+            return await _context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "CreateAsync failed.");
+            return false;
+        }
+    }
+
+    public async Task<IEnumerable<EventDto>> GetAllAsync()
+    {
+        try
+        {
+            return await _context.Events
+           .Select(e => new EventDto
+           {
+               Id = e.Id,
+               Title = e.Title,
+               Category = e.Category,
+               Date = e.Date,
+               Location = e.Location,   
+               Status = e.Status,
+               Progress = e.Progress,
+               Price = e.Price,
+               Description = e.Description,
+               TicketsSold = e.TicketsSold,
+               ImageFileName = e.ImageFileName,
+               ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
+               ? null
+               : $"https://localhost:7101/event-images/{e.ImageFileName}"
+           }).ToListAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetAllAsync failed.");
+            return Enumerable.Empty<EventDto>();
+        }
+    }
+
+    public async Task<EventDto?> GetByIdAsync(int id)
+    {
+        try
+        {
+            var e = await _context.Events.FindAsync(id);
+            if (e == null) return null;
+
+            return new EventDto
+            {
+                Id = e.Id,
+                Title = e.Title,
+                Category = e.Category,
+                Date = e.Date,
+                Location = e.Location,
+                Status = e.Status,
+                Progress = e.Progress,      
+                Price = e.Price,
+                Description = e.Description,    
+                TicketsSold = e.TicketsSold,
+                ImageFileName = e.ImageFileName,
+                ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
+                ? null
+                : $"https://localhost:7101/event-images/{e.ImageFileName}"
+
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "GetByIdAsync failed.");
+            return null;
+        }
+    }
+
+    public async Task<bool> UpdateAsync(UpdateEventDto model)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(model.Id);
+            if (entity == null) return false;
+
+            entity.Title = model.Title;
+            entity.Category = model.Category;
+            entity.Date = model.Date;
+            entity.Location = model.Location;
+            entity.Status = model.Status;
+            entity.Progress = model.Progress;
+            entity.Price = model.Price;
+            entity.Description = model.Description;
+
+            return await _context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "UpdateAsync failed.");
+            return false;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(id);
+            if (entity == null) return false;
+
+            _context.Events.Remove(entity);
+            return await _context.SaveChangesAsync() > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "DeleteAsync failed.");
+            return false;
+
+        }
+    }
+
+    public async Task<(bool success, string? oldFileName)> SaveImageAsync(int eventId, string newFileName)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(eventId);
+            if (entity == null) return (false, null);
+
+            var oldFileName = entity.ImageFileName;
+            entity.ImageFileName = newFileName;
+
+            await _context.SaveChangesAsync();
+            return (true, oldFileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "SaveImageAsync failed");
+            return (false, null);
+        }
+
+    }
+
+
+
+    public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(eventId);
+            if (entity == null)
+                return false;
+
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "event-images");
+
+            if (!string.IsNullOrEmpty(entity.ImageFileName))
+            {
+                var oldPath = Path.Combine(uploadsFolder, entity.ImageFileName);
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+
+            entity.ImageFileName = newfileName;
+            await _context.SaveChangesAsync();  
+
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "ReplaceEventImageAsync failed.");
+            return false;
+        }
+    }
+}
