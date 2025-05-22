@@ -32,15 +32,21 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
+// SKAPA mappar om de saknas
 var staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-if (Directory.Exists(staticFilesPath))
+if (!Directory.Exists(staticFilesPath))
+    Directory.CreateDirectory(staticFilesPath);
+
+var imagesPath = Path.Combine(staticFilesPath, "event-images");
+if (!Directory.Exists(imagesPath))
+    Directory.CreateDirectory(imagesPath);
+
+// SERVA statiska filer
+app.UseStaticFiles(new StaticFileOptions
 {
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider(staticFilesPath),
-        RequestPath = ""
-    });
-}
+    FileProvider = new PhysicalFileProvider(staticFilesPath),
+    RequestPath = ""
+});
 
 app.UseCors("AllowFrontend");
 
