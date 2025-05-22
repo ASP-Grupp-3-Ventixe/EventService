@@ -6,10 +6,10 @@ namespace EventApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController(IEventService eventService, ILogger logger) : ControllerBase
+    public class EventsController(IEventService eventService, ILogger<EventsController> logger) : ControllerBase
     {
         private readonly IEventService _eventService = eventService;
-        private readonly ILogger _logger = logger;
+        private readonly ILogger<EventsController> _logger = logger;
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());

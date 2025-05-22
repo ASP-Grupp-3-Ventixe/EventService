@@ -16,12 +16,13 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy
-            .WithOrigins("https://ventixe-frontend.onrender.com")
+            .SetIsOriginAllowed(_ => true)
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -29,6 +30,9 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
+
+
+app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
@@ -47,8 +51,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
-app.UseCors();
 app.UseAuthorization();
 app.MapControllers();
-
 app.Run();
