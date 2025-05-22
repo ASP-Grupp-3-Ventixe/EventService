@@ -5,10 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EventApp.Services;
 
-public class EventService(AppDbContext context, ILogger<EventService> logger) : IEventService
+public class EventService(AppDbContext context, ILogger<EventService> logger, IConfiguration configuration) : IEventService
 {
     private readonly AppDbContext _context = context;
     private readonly ILogger<EventService> _logger = logger;
+    private readonly IConfiguration _config = configuration;
 
     public async Task<bool> CreateAsync(CreateEventDto model)
     {
@@ -51,7 +52,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
                Title = e.Title,
                Category = e.Category,
                Date = e.Date,
-               Location = e.Location,   
+               Location = e.Location,
                Status = e.Status,
                Progress = e.Progress,
                Price = e.Price,
@@ -60,7 +61,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
                ImageFileName = e.ImageFileName,
                ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
                ? null
-               : $"https://localhost:7101/event-images/{e.ImageFileName}"
+               : $"{_config["ImageBaseUrl"]}/event-images/{e.ImageFileName}"
+
            }).ToListAsync();
         }
         catch (Exception ex)
@@ -85,14 +87,15 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
                 Date = e.Date,
                 Location = e.Location,
                 Status = e.Status,
-                Progress = e.Progress,      
+                Progress = e.Progress,
                 Price = e.Price,
-                Description = e.Description,    
+                Description = e.Description,
                 TicketsSold = e.TicketsSold,
                 ImageFileName = e.ImageFileName,
                 ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
                 ? null
-                : $"https://localhost:7101/event-images/{e.ImageFileName}"
+                : $"{_config["ImageBaseUrl"]}/event-images/{e.ImageFileName}"
+            
 
             };
         }
@@ -187,7 +190,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
             }
 
             entity.ImageFileName = newfileName;
-            await _context.SaveChangesAsync();  
+            await _context.SaveChangesAsync();
 
             return true;
 
