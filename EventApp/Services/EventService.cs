@@ -28,14 +28,18 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
             };
 
             _context.Events.Add(entity);
-            return await _context.SaveChangesAsync() > 0;
+            var saved = await _context.SaveChangesAsync();
+            return saved > 0;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CreateAsync failed.");
+            var message = $"🔥 CreateAsync ERROR: {ex.Message}";
+            Console.WriteLine(message);                // <== Lägg till detta
+            _logger.LogError(ex, message);
             return false;
         }
     }
+
 
     public async Task<IEnumerable<EventDto>> GetAllAsync()
     {
