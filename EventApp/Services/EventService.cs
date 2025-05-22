@@ -116,7 +116,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
 
             entity.Title = model.Title;
             entity.Category = model.Category;
-            entity.Date = model.Date;
+            entity.Date = DateTime.SpecifyKind(model.Date, DateTimeKind.Utc);
             entity.Location = model.Location;
             entity.Status = model.Status;
             entity.Progress = model.Progress;
