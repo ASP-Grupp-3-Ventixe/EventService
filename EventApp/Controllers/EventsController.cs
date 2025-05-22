@@ -6,9 +6,10 @@ namespace EventApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController(IEventService eventService) : ControllerBase
+    public class EventsController(IEventService eventService, ILogger logger) : ControllerBase
     {
         private readonly IEventService _eventService = eventService;
+        private readonly ILogger _logger = logger;
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());
@@ -27,10 +28,25 @@ namespace EventApp.Controllers
         public async Task<IActionResult> Create([FromBody] CreateEventDto model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Any())
+                    .Select(x => new {
+                        Field = x.Key,
+                        Errors = x.Value.Errors.Select(e => e.ErrorMessage)
+                    });
+
+                _logger.LogWarning("🚫 INVALID MODELSTATE: {@Errors}", errors);
+
+                return BadRequest(new
+                {
+                    Message = "ModelState invalid",
+                    Errors = errors
+                });
+            }
 
             var success = await _eventService.CreateAsync(model);
-            return success ? Ok() : BadRequest("Event creation failed.");
+            return success ? Ok() : BadRequest("Event creation failed in service.");
         }
 
         [HttpPut]
