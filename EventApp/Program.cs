@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
             "https://localhost:5173",
             "https://kind-coast-0cff2bc03.6.azurestaticapps.net/",
             "https://ventixe-cave.netlify.app",
-            "https://ventixe-frontend.onrender.com"
+           "https://ventixe-frontend.onrender.com"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()
