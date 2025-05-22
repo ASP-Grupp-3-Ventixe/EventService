@@ -17,20 +17,20 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:5173", 
+            "http://localhost:5173",
             "https://localhost:5173",
             "https://kind-coast-0cff2bc03.6.azurestaticapps.net/",
             "https://ventixe-cave.netlify.app",
-           "https://ventixe-frontend.onrender.com"
+            "https://ventixe-frontend.onrender.com"
         )
         .AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials();
+        .AllowAnyMethod();
     });
 });
+
 
 
 
@@ -59,7 +59,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
 
