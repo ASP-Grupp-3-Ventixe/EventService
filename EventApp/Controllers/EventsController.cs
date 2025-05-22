@@ -28,17 +28,30 @@ namespace EventApp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values
-           .SelectMany(v => v.Errors)
-           .Select(e => e.ErrorMessage);
+                var errorDetails = ModelState
+                    .Where(ms => ms.Value.Errors.Count > 0)
+                    .Select(ms => new
+                    {
+                        Field = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                    });
 
-                return BadRequest($"ModelState invalid: {string.Join(" | ", errors)}");
+                foreach (var error in errorDetails)
+                {
+                    Console.WriteLine($"🔴 FIELD: {error.Field}");
+                    foreach (var e in error.Errors)
+                    {
+                        Console.WriteLine($"    ❌ ERROR: {e}");
+                    }
+                }
 
+                return BadRequest(errorDetails);
             }
-               
+
             var success = await _eventService.CreateAsync(model);
             return success ? Ok() : BadRequest("Event creation failed in service.");
         }
+
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateEventDto model)
