@@ -27,10 +27,17 @@ namespace EventApp.Controllers
         public async Task<IActionResult> Create([FromBody] CreateEventDto model)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            {
+                var errors = ModelState.Values
+           .SelectMany(v => v.Errors)
+           .Select(e => e.ErrorMessage);
 
+                return BadRequest($"ModelState invalid: {string.Join(" | ", errors)}");
+
+            }
+               
             var success = await _eventService.CreateAsync(model);
-            return success ? Ok() : BadRequest("Event creation failed.");
+            return success ? Ok() : BadRequest("Event creation failed in service.");
         }
 
         [HttpPut]
