@@ -32,13 +32,15 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-
-app.UseStaticFiles(new StaticFileOptions
+var staticFilesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+if (Directory.Exists(staticFilesPath))
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
-    RequestPath = ""
-});
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(staticFilesPath),
+        RequestPath = ""
+    });
+}
 
 app.UseCors("AllowFrontend");
 
