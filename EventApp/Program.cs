@@ -2,6 +2,7 @@ using EventApp;
 using EventApp.Interfaces;
 using EventApp.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,13 @@ builder.Logging.AddConsole();
 var app = builder.Build();
 
 
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")),
+    RequestPath = ""
+});
+
 app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -53,4 +61,5 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
