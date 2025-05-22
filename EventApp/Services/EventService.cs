@@ -24,21 +24,17 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
                 Progress = model.Progress,
                 Price = model.Price,
                 Description = model.Description,
-                TicketsSold = 0
             };
 
             _context.Events.Add(entity);
-            var saved = await _context.SaveChangesAsync();
-            return saved > 0;
+            return await _context.SaveChangesAsync() > 0;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "🔥 ERROR in CreateAsync: {@Model}", model); // 👈 NYTT
+            _logger.LogError(ex, "CreateAsync failed.");
             return false;
         }
     }
-
-
 
     public async Task<IEnumerable<EventDto>> GetAllAsync()
     {
