@@ -18,7 +18,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
             {
                 Title = model.Title,
                 Category = model.Category,
-                Date = model.Date,
+                Date = DateTime.SpecifyKind(model.Date, DateTimeKind.Utc),
                 Location = model.Location,
                 Status = model.Status,
                 Progress = model.Progress,
