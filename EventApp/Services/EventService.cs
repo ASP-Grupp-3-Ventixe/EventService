@@ -45,6 +45,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
     {
         try
         {
+            var imageBaseUrl = _config["ImageBaseUrl"] ?? "https://eventservice-rk6f.onrender.com";
+
             return await _context.Events
            .Select(e => new EventDto
            {
@@ -60,9 +62,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                TicketsSold = e.TicketsSold,
                ImageFileName = e.ImageFileName,
                ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
-               ? null
-               : $"{_config["ImageBaseUrl"]}/event-images/{e.ImageFileName}"
-
+                   ? null
+                   : $"{imageBaseUrl}/event-images/{e.ImageFileName}"
            }).ToListAsync();
         }
         catch (Exception ex)
@@ -79,6 +80,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             var e = await _context.Events.FindAsync(id);
             if (e == null) return null;
 
+            var imageBaseUrl = _config["ImageBaseUrl"] ?? "https://eventservice-rk6f.onrender.com";
+
             return new EventDto
             {
                 Id = e.Id,
@@ -93,10 +96,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                 TicketsSold = e.TicketsSold,
                 ImageFileName = e.ImageFileName,
                 ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
-                ? null
-                : $"{_config["ImageBaseUrl"]}/event-images/{e.ImageFileName}"
-            
-
+                    ? null
+                    : $"{imageBaseUrl}/event-images/{e.ImageFileName}"
             };
         }
         catch (Exception ex)
@@ -145,7 +146,6 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         {
             _logger.LogError(ex, "DeleteAsync failed.");
             return false;
-
         }
     }
 
@@ -167,10 +167,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             _logger.LogError(ex, "SaveImageAsync failed");
             return (false, null);
         }
-
     }
-
-
 
     public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName)
     {
