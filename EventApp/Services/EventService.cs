@@ -24,6 +24,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
                 Progress = model.Progress,
                 Price = model.Price,
                 Description = model.Description,
+                TicketsSold = 0
             };
 
             _context.Events.Add(entity);
