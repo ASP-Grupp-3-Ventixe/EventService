@@ -17,7 +17,7 @@ builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowFrontend",policy =>
     {
         policy
             .SetIsOriginAllowed(_ => true) 
