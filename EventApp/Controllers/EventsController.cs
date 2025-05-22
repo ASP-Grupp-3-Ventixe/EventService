@@ -6,10 +6,11 @@ namespace EventApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController(IEventService eventService, ILogger<EventsController> logger) : ControllerBase
+    public class EventsController(IEventService eventService, ILogger<EventsController> logger, IConfiguration configuration) : ControllerBase
     {
         private readonly IEventService _eventService = eventService;
         private readonly ILogger<EventsController> _logger = logger;
+        private readonly IConfiguration _config = configuration;
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());
@@ -84,8 +85,10 @@ namespace EventApp.Controllers
 
             var result = await _eventService.ReplaceEventImageAsync(eventId, fileName);
 
+            var imageBaseUrl = _config["ImageBaseUrl"] ?? "https://eventservice-rk6f.onrender.com";
+
             return result
-                ? Ok(new { fileName, imageUrl = $"https://localhost:7101/event-images/{fileName}" })
+                ? Ok(new { fileName, imageUrl = $"{imageBaseUrl}/event-images/{fileName}" })
                 : NotFound("Event not found");
         }
     }
