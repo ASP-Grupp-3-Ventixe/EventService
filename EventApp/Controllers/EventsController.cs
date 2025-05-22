@@ -24,7 +24,7 @@ namespace EventApp.Controllers
             return result == null ? NotFound() : Ok(result);
         }
 
-        [HttpPost]
+  
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto model)
         {

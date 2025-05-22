@@ -28,12 +28,15 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
             };
 
             _context.Events.Add(entity);
+            _logger.LogInformation("🛠️ CREATE: {@model}", model);
+
             return await _context.SaveChangesAsync() > 0;
+
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "CreateAsync failed.");
-            return false;
+            _logger.LogError(ex, "❌ CreateAsync failed. Data: {@model}", model);
+            throw;
         }
     }
 
