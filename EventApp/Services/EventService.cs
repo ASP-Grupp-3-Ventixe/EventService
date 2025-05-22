@@ -33,12 +33,11 @@ public class EventService(AppDbContext context, ILogger<EventService> logger) : 
         }
         catch (Exception ex)
         {
-            var message = $"🔥 CreateAsync ERROR: {ex.Message}";
-            Console.WriteLine(message);                // <== Lägg till detta
-            _logger.LogError(ex, message);
+            _logger.LogError(ex, "🔥 ERROR in CreateAsync: {@Model}", model); // 👈 NYTT
             return false;
         }
     }
+
 
 
     public async Task<IEnumerable<EventDto>> GetAllAsync()
