@@ -10,6 +10,7 @@ namespace EventApp.Interfaces
         Task<EventDto?> GetByIdAsync(int id);
         Task<bool> UpdateAsync(UpdateEventDto model);
         Task<(bool success, string? oldFileName)> SaveImageAsync(int eventId, string newFileName);
-        Task<bool> ReplaceEventImageAsync(int eventId, string newFileName);           
+        Task<bool> ReplaceEventImageAsync(int eventId, string newFileName);
+        Task<EventDetailsDto?> GetEventByIdAsync(int id);
     }
-}       
+}           

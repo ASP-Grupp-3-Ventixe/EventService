@@ -15,16 +15,6 @@ namespace EventApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-            if (id <= 0)
-                return BadRequest("Invalid ID.");
-
-            var result = await _eventService.GetByIdAsync(id);
-            return result == null ? NotFound() : Ok(result);
-        }
-
   
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto model)
@@ -90,6 +80,17 @@ namespace EventApp.Controllers
             return result
                 ? Ok(new { fileName, imageUrl = $"{imageBaseUrl}/event-images/{fileName}" })
                 : NotFound("Event not found");
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _eventService.GetEventByIdAsync(id);
+
+            if(result == null)
+                return NotFound(result);
+
+            return Ok(result);
         }
     }
 

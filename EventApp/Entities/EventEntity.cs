@@ -11,7 +11,9 @@ public class EventEntity
     public int Progress { get; set; }
     public decimal Price { get; set; }
     public string Description { get; set; } = string.Empty;
-    public int? TicketsSold { get; set; } = 0;
+    public int TicketsSold { get; set; } = 0;
     public string? ImageFileName { get; set; }
+    public int MaxTickets { get; set; } = 0;
+
+    public ICollection<PackageEntity> Packages { get; set; } = [];
 }
-    
