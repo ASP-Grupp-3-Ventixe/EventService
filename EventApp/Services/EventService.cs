@@ -127,7 +127,9 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             Location = eventEntity.Location,
             TicketsSold = eventEntity.TicketsSold,
             MaxTickets = eventEntity.MaxTickets,
-            PriceFrom = eventEntity.Price
+            PriceFrom = eventEntity.Price,
+            Packages = eventEntity.Packages.Select(p => p.Name).ToList()
+            
         };
     }
 
