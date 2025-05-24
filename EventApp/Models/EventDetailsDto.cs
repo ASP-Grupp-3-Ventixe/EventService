@@ -1,4 +1,6 @@
-﻿namespace EventApp.Models;
+﻿using EventApp.Enums;
+
+namespace EventApp.Models;
 
 public class EventDetailsDto
 {   
@@ -8,7 +10,7 @@ public class EventDetailsDto
     public DateTime Date { get; set; }
     public string? Location { get; set; } 
     public string? Description { get; set; }
-    public string Category { get; set; } = string.Empty;
+    public EventCategory Category { get; set; }
 
     public int TicketsSold { get; set; }
     public int MaxTickets { get; set; }

@@ -71,22 +71,6 @@ namespace EventApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Category = "Music",
-                            Date = new DateTime(2025, 5, 23, 11, 35, 59, 945, DateTimeKind.Utc).AddTicks(8717),
-                            Description = "Time for magic",
-                            Location = "Hogwarts",
-                            MaxTickets = 2500,
-                            Price = 120m,
-                            Progress = 70,
-                            Status = "Active",
-                            TicketsSold = 1000,
-                            Title = "Magic"
-                        });
                 });
 
             modelBuilder.Entity("EventApp.Entities.PackageEntity", b =>
@@ -109,26 +93,6 @@ namespace EventApp.Migrations
                     b.HasIndex("EventId");
 
                     b.ToTable("Packages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EventId = 1,
-                            Name = "VIP"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EventId = 1,
-                            Name = "Diamond"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            EventId = 1,
-                            Name = "Platinum"
-                        });
                 });
 
             modelBuilder.Entity("EventApp.Entities.PackageEntity", b =>

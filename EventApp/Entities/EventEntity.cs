@@ -1,10 +1,12 @@
-﻿namespace EventApp.Entities;
+﻿using EventApp.Enums;
+
+namespace EventApp.Entities;
 
 public class EventEntity
 {
     public int Id { get; set; }
     public string Title { get; set; } = null!;
-    public string Category { get; set; } = null!;
+    public EventCategory Category {  get; set; }
     public DateTime Date { get; set; }
     public string Location { get; set; } = null!;
     public string Status { get; set; } = "Active";

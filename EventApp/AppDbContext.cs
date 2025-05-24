@@ -1,5 +1,4 @@
-﻿using EventApp.Data;
-using EventApp.Entities;
+﻿using EventApp.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventApp;
@@ -19,7 +18,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             .HasForeignKey(p => p.EventId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        SeedData.Seed(modelBuilder);
+        modelBuilder.Entity<EventEntity>()
+       .Property(e => e.Category)
+       .HasConversion<string>();
+
     }
 
 }

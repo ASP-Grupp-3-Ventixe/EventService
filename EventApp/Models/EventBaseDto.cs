@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EventApp.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace EventApp.Models;
@@ -11,9 +12,9 @@ public abstract class EventBaseDto
     public string Title { get; set; } = null!;
 
     [Required]
-    [StringLength(50)]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("category")]
-    public string Category { get; set; } = null!;
+    public EventCategory Category { get; set; }
 
     [Required]
     [JsonPropertyName("date")]

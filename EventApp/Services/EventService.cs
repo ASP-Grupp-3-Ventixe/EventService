@@ -25,7 +25,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                 Progress = model.Progress,
                 Price = model.Price,
                 Description = model.Description,
-                TicketsSold = 0
+                TicketsSold = 0,
+                Packages = model.Packages?.Select(name => new PackageEntity { Name = name }).ToList()!
             };
 
             _context.Events.Add(entity);
@@ -123,7 +124,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             Title = eventEntity.Title,
             Category = eventEntity.Category,
             Status = eventEntity.Status,
-            Date = eventEntity.Date,
+            Date = eventEntity.Date,        
             Location = eventEntity.Location,
             TicketsSold = eventEntity.TicketsSold,
             MaxTickets = eventEntity.MaxTickets,
