@@ -15,6 +15,8 @@ public class EventEntity
     public string Description { get; set; } = string.Empty;
     public int TicketsSold { get; set; } = 0;
     public string? ImageFileName { get; set; }
+    public string? ImageUrl { get; set; } 
+
     public int MaxTickets { get; set; } = 0;
 
     public ICollection<PackageEntity> Packages { get; set; } = [];

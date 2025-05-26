@@ -76,11 +76,11 @@ namespace EventApp.Controllers
 
                 var (fileName, imageUrl) = result.Value;
 
-                var success = await _eventService.ReplaceEventImageAsync(eventId, fileName);
+                var success = await _eventService.ReplaceEventImageAsync(eventId, fileName, imageUrl);
 
                 return success
                     ? Ok(new { fileName, imageUrl })
-                    : NotFound("Event not found");
+                    : NotFound("Event not found");      
 
             }
             catch (Exception ex)

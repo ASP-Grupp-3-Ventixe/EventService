@@ -81,9 +81,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                Description = e.Description,
                TicketsSold = e.TicketsSold,
                ImageFileName = e.ImageFileName,
-               ImageUrl = string.IsNullOrEmpty(e.ImageFileName)
-                   ? null
-                   : $"{imageBaseUrl}/event-images/{e.ImageFileName}"
+               ImageUrl = e.ImageUrl,
            }).ToListAsync();
         }
         catch (Exception ex)
@@ -258,7 +256,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         }
     }
 
-    public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName)
+    public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName, string imageUrl )
     {
         try
         {
@@ -275,7 +273,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                     File.Delete(oldPath);
             }
 
-            entity.ImageFileName = newfileName;
+            entity.ImageFileName = newfileName; 
+            entity.ImageUrl = imageUrl;
             await _context.SaveChangesAsync();
 
             return true;
