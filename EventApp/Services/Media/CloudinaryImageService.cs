@@ -1,39 +1,50 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using EventApp.Services.Media;
-using EventApp.Settings;
-using Microsoft.Extensions.Options;
+using EventApp.Interfaces;
 
-namespace EventApp.Services;
-
-public class CloudinaryImageService : IImageService
+namespace EventApp.Services.Media
 {
-    private readonly Cloudinary _cloudinary;
-
-    public CloudinaryImageService(IOptions<CloudinarySettings> settings)
+    public class CloudinaryImageService : IImageService
     {
-        var acc = new Account(
-            settings.Value.CloudName,
-            settings.Value.ApiKey,
-            settings.Value.ApiSecret
-        );
+        private readonly Cloudinary _cloudinary;
 
-        _cloudinary = new Cloudinary(acc);
-    }
-
-    public async Task<(string FileName, string Url)> UploadImageAsync(IFormFile file)
-    {
-        var uploadParams = new ImageUploadParams
+        public CloudinaryImageService(IConfiguration config)
         {
-            File = new FileDescription(file.FileName, file.OpenReadStream()),
-            Folder = "event-images"
-        };
+            var account = new Account(
+                config["Cloudinary:CloudName"],
+                config["Cloudinary:ApiKey"],
+                config["Cloudinary:ApiSecret"]
+            );
+            _cloudinary = new Cloudinary(account);
+        }
 
-        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        public async Task<(string FileName, string Url)?> UploadImageAsync(IFormFile file)
+        {
+            if (file == null || file.Length == 0) return null;
 
-        if (uploadResult.StatusCode != System.Net.HttpStatusCode.OK)
-            throw new Exception("Cloudinary upload failed");
+            await using var stream = file.OpenReadStream();
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.FileName, stream),
+                Folder = "event-images"
+            };
 
-        return (uploadResult.PublicId, uploadResult.SecureUrl.AbsoluteUri);
+            var result = await _cloudinary.UploadAsync(uploadParams);
+
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                return (result.PublicId, result.SecureUrl.ToString());
+            }
+
+            return null;
+        }
+
+        public async Task<bool> DeleteImageAsync(string publicId)
+        {
+            var deletionParams = new DeletionParams(publicId);
+            var result = await _cloudinary.DestroyAsync(deletionParams);
+
+            return result.Result == "ok";
+        }
     }
 }

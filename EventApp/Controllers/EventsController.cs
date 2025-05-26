@@ -69,13 +69,19 @@ namespace EventApp.Controllers
 
             try
             {
-                var (fileName, imageUrl) = await imageService.UploadImageAsync(file);
+                var result = await imageService.UploadImageAsync(file);
+
+                if (result == null)
+                    return StatusCode(500, "Image upload failed.");
+
+                var (fileName, imageUrl) = result.Value;
 
                 var success = await _eventService.ReplaceEventImageAsync(eventId, fileName);
 
                 return success
                     ? Ok(new { fileName, imageUrl })
                     : NotFound("Event not found");
+
             }
             catch (Exception ex)
             {
