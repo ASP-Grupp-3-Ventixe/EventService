@@ -26,6 +26,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                 Price = model.Price,
                 Description = model.Description,
                 TicketsSold = 0,
+                MaxTickets = model.MaxTickets,
                 Packages = model.Packages?.Select(p => new PackageEntity { Name = p.Name, Price = p.Price }).ToList()!
             };
 
