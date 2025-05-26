@@ -31,7 +31,11 @@ namespace EventApp.Controllers
         public async Task<IActionResult> Update([FromBody] UpdateEventDto model)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("ModelState invalid: {@errors}", ModelState.Values.SelectMany(v => v.Errors));
                 return BadRequest(ModelState);
+
+            }
 
             var success = await _eventService.UpdateAsync(model);
             return success ? Ok() : NotFound("Event not found.");
