@@ -6,4 +6,5 @@ public class UpdateEventDto : EventBaseDto
 {
     [Required]
     public int Id { get; set; } 
+    public List<PackageDto>? Packages { get; set; }
 }

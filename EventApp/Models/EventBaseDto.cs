@@ -40,4 +40,7 @@ public abstract class EventBaseDto
     [StringLength(1000)]
     [JsonPropertyName("description")]
     public string Description { get; set; } = string.Empty;
+
+    [Required]
+    public int MaxTickets { get; set; }
 }

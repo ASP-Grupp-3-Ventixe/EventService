@@ -16,7 +16,7 @@ public class EventDetailsDto
     public int MaxTickets { get; set; }
     public decimal PriceFrom { get; set; }
 
-    public List<string> Packages { get; set; } = new();
+    public List<PackageDto> Packages { get; set; } = [];
 
 
 }

@@ -26,7 +26,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                 Price = model.Price,
                 Description = model.Description,
                 TicketsSold = 0,
-                Packages = model.Packages?.Select(name => new PackageEntity { Name = name }).ToList()!
+                Packages = model.Packages?.Select(p => new PackageEntity { Name = p.Name, Price = p.Price }).ToList()!
             };
 
             _context.Events.Add(entity);
@@ -124,13 +124,17 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             Title = eventEntity.Title,
             Category = eventEntity.Category,
             Status = eventEntity.Status,
-            Date = eventEntity.Date,        
+            Date = eventEntity.Date,
             Location = eventEntity.Location,
             TicketsSold = eventEntity.TicketsSold,
             MaxTickets = eventEntity.MaxTickets,
             PriceFrom = eventEntity.Price,
-            Packages = eventEntity.Packages.Select(p => p.Name).ToList()
-            
+            Packages = [.. eventEntity.Packages.Select(p => new PackageDto
+            {
+                Name = p.Name,
+                Price = p.Price,
+            })]
+
         };
     }
 
@@ -149,6 +153,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             entity.Progress = model.Progress;
             entity.Price = model.Price;
             entity.Description = model.Description;
+            entity.MaxTickets = model.MaxTickets;
+            entity.Packages = [.. model.Packages!.Select(p => new PackageEntity { Name = p.Name, Price = p.Price, EventId = model.Id })];
 
             return await _context.SaveChangesAsync() > 0;
         }
