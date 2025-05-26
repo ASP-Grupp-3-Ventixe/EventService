@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
             "http://localhost:5173",
             "https://localhost:5173",
-            "https://kind-coast-0cff2bc03.6.azurestaticapps.net/",
+            "https://kind-coast-0cff2bc03.6.azurestaticapps.net",
             "https://ventixe-cave.netlify.app",
            "https://ventixe-frontend.onrender.com"
         )

@@ -12,5 +12,6 @@ namespace EventApp.Interfaces
         Task<(bool success, string? oldFileName)> SaveImageAsync(int eventId, string newFileName);
         Task<bool> ReplaceEventImageAsync(int eventId, string newFileName);
         Task<EventDetailsDto?> GetEventByIdAsync(int id);
+        Task<bool> IncreaseTicketsSoldAsync(int eventId, int quantity);
     }
 }           
