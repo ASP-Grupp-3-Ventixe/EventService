@@ -85,6 +85,8 @@ namespace EventApp.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "UploadImage failed. Exception: {Message}", ex.Message);
+
                 _logger.LogError(ex, "UploadImage failed.");
                 return StatusCode(500, "Failed to upload image.");
             }
