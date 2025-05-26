@@ -193,8 +193,12 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
     {
         try
         {
-            var entity = await _context.Events.FindAsync(model.Id);
+            var entity = await _context.Events
+                .Include (e => e.Packages)  
+                .FirstOrDefaultAsync(e => e.Id == model.Id);
             if (entity == null) return false;
+
+            _context.Packages.RemoveRange(entity.Packages);
 
             entity.Title = model.Title;
             entity.Category = model.Category;
@@ -207,6 +211,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             entity.MaxTickets = model.MaxTickets;
             entity.Packages = [.. model.Packages!.Select(p => new PackageEntity { Name = p.Name, Price = p.Price, EventId = model.Id })];
 
+            _logger.LogInformation("Remaining packages after remove: {@packages}", entity.Packages);
             return await _context.SaveChangesAsync() > 0;
         }
         catch (Exception ex)
