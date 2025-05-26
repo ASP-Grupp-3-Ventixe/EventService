@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace EventApp.Services.Media;
+﻿namespace EventApp.Services.Media;
 
 public interface IImageService
 {
