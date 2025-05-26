@@ -1,5 +1,6 @@
 ﻿using EventApp.Interfaces;
 using EventApp.Models;
+using EventApp.Services.Media;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventApp.Controllers
@@ -57,38 +58,32 @@ namespace EventApp.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("upload-image/{eventId}")]
-        public async Task<IActionResult> UploadImage(int eventId, [FromForm] IFormFile file)
+        public async Task<IActionResult> UploadImage(int eventId, [FromForm] IFormFile file, [FromServices] IImageService imageService)
         {
             if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
 
-            // AllowedTypes inklistrad från ChatGpt
             var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
             if (!allowedTypes.Contains(file.ContentType))
                 return BadRequest("Invalid image type.");
 
-
-            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "event-images");
-
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
-
-            var savePath = Path.Combine(uploadsFolder, fileName);
-
-            using (var stream = new FileStream(savePath, FileMode.Create))
+            try
             {
-                await file.CopyToAsync(stream);
+                var (fileName, imageUrl) = await imageService.UploadImageAsync(file);
+
+                var success = await _eventService.ReplaceEventImageAsync(eventId, fileName);
+
+                return success
+                    ? Ok(new { fileName, imageUrl })
+                    : NotFound("Event not found");
             }
-
-            var result = await _eventService.ReplaceEventImageAsync(eventId, fileName);
-
-            var imageBaseUrl = _config["ImageBaseUrl"] ?? "https://eventservice-rk6f.onrender.com";
-
-            return result
-                ? Ok(new { fileName, imageUrl = $"{imageBaseUrl}/event-images/{fileName}" })
-                : NotFound("Event not found");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "UploadImage failed.");
+                return StatusCode(500, "Failed to upload image.");
+            }
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
@@ -115,4 +110,4 @@ namespace EventApp.Controllers
 }
 
 
-    
+
