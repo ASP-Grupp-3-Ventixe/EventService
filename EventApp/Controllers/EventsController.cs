@@ -96,7 +96,7 @@ namespace EventApp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _eventService.GetEventForEditAsync(id);
+            var result = await _eventService.GetEventByIdAsync(id);
 
             if (result == null)
                 return NotFound(result);
@@ -114,6 +114,17 @@ namespace EventApp.Controllers
 
             return Ok("Tickets updated.");
         }
+
+        [HttpGet("edit/{id}")]
+        public async Task<IActionResult> GetForEdit(int id)
+        {
+            var result = await _eventService.GetEventForEditAsync(id);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
     }
 }
 
