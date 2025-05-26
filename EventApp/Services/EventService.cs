@@ -157,6 +157,38 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         };
     }
 
+    public async Task<UpdateEventDto?> GetEventForEditAsync(int id)
+    {
+        var eventEntity = await _context.Events
+                   .Include(e => e.Packages)
+                   .FirstOrDefaultAsync(e => e.Id == id);
+
+
+        if (eventEntity == null)
+            return null;
+
+        return new UpdateEventDto
+        {
+            Id = eventEntity.Id,
+            Title = eventEntity.Title,
+            Category = eventEntity.Category,
+            Status = eventEntity.Status,
+            Date = eventEntity.Date,
+            Location = eventEntity.Location,
+            Progress = eventEntity.Progress,
+            Price = eventEntity.Price,
+            Description = eventEntity.Description,
+            MaxTickets = eventEntity.MaxTickets,
+            Packages = [.. eventEntity.Packages.Select(p => new PackageDto
+            {
+                Name = p.Name,
+                Price = p.Price,
+            })]
+
+        };  
+    }
+
+
     public async Task<bool> UpdateAsync(UpdateEventDto model)
     {
         try

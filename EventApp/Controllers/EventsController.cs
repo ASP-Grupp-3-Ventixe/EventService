@@ -93,7 +93,7 @@ namespace EventApp.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var result = await _eventService.GetEventByIdAsync(id);
+            var result = await _eventService.GetEventForEditAsync(id);
 
             if (result == null)
                 return NotFound(result);
