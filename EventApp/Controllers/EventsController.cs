@@ -15,7 +15,7 @@ namespace EventApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());
 
-  
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateEventDto model)
         {
@@ -87,12 +87,24 @@ namespace EventApp.Controllers
         {
             var result = await _eventService.GetEventByIdAsync(id);
 
-            if(result == null)
+            if (result == null)
                 return NotFound(result);
 
             return Ok(result);
         }
+
+
+        [HttpPost("increase-tickets")]
+        public async Task<IActionResult> IncreaseTicketsSold(int eventId, int quantity)
+        {
+            var result = await _eventService.IncreaseTicketsSoldAsync(eventId, quantity);
+            if (!result)
+                return BadRequest("Failed to increase tickets.");
+
+            return Ok("Tickets updated.");
+        }
     }
-
-
 }
+
+
+    

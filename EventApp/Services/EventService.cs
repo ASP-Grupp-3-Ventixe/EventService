@@ -43,6 +43,24 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         }
     }
 
+    public async Task<bool> IncreaseTicketsSoldAsync(int eventId, int quantity)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(eventId);
+            if (entity == null) return false;
+
+            entity.TicketsSold += quantity;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to increase TicketsSold for eventId {EventId}", eventId);
+            return false;
+        }
+    }
+
     public async Task<IEnumerable<EventDto>> GetAllAsync()
     {
         try
