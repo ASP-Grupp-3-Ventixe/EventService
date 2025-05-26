@@ -15,6 +15,8 @@ public class EventDetailsDto
     public int TicketsSold { get; set; }
     public int MaxTickets { get; set; }
     public decimal PriceFrom { get; set; }
+    public string? ImageUrl { get; set; }
+
 
     public List<PackageDto> Packages { get; set; } = [];
 

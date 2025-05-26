@@ -146,6 +146,8 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
             TicketsSold = eventEntity.TicketsSold,
             MaxTickets = eventEntity.MaxTickets,
             PriceFrom = eventEntity.Price,
+            Description = eventEntity.Description,
+            ImageUrl = eventEntity.ImageUrl,
             Packages = [.. eventEntity.Packages.Select(p => new PackageDto
             {
                 Name = p.Name,
@@ -183,7 +185,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                 Price = p.Price,
             })]
 
-        };  
+        };
     }
 
 
@@ -192,7 +194,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         try
         {
             var entity = await _context.Events
-                .Include (e => e.Packages)  
+                .Include(e => e.Packages)
                 .FirstOrDefaultAsync(e => e.Id == model.Id);
             if (entity == null) return false;
 
@@ -256,7 +258,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         }
     }
 
-    public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName, string imageUrl )
+    public async Task<bool> ReplaceEventImageAsync(int eventId, string newfileName, string imageUrl)
     {
         try
         {
@@ -273,7 +275,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
                     File.Delete(oldPath);
             }
 
-            entity.ImageFileName = newfileName; 
+            entity.ImageFileName = newfileName;
             entity.ImageUrl = imageUrl;
             await _context.SaveChangesAsync();
 
