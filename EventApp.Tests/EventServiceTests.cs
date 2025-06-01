@@ -1,131 +1,159 @@
-﻿//using EventApp.Entities;
-//using EventApp.Models;
-//using EventApp.Services;
-//using FluentAssertions;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.Logging;
+﻿using EventApp;
+using EventApp.Entities;
+using EventApp.Enums;
+using EventApp.Models;
+using EventApp.Services;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
-//namespace EventApp.Tests;
+namespace EventApp.Tests;
 
-//public class EventServiceTests
-//{
-//    private readonly EventService _eventService;
-//    private readonly DbContextOptions<AppDbContext> _dbContextOptions;
-//    private readonly ILogger<EventService> _logger;      
-//    private readonly
+// Denna testfil är genererad av ChatGPT enligt mina instruktioner och min kodstruktur.
 
-//    public EventServiceTests()
-//    {
-//        _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
-//            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-//            .Options;
+public class EventServiceTests
+{
+    private readonly EventService _eventService;
+    private readonly AppDbContext _context;
 
-//        var context = new AppDbContext(_dbContextOptions);
+    public EventServiceTests()
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
 
-//        context.Events.AddRange(
-//            new EventEntity { Title = "Test 1", Category = "Concert", Date = DateTime.Now, Location = "Stockholm", Status = "Active", Progress = 20, Price = 200, Description = "Testing", TicketsSold = 500 },
-//            new EventEntity { Title = "Test 2", Category = "Kids", Date = DateTime.Now, Location = "Göteborg", Status = "Active", Progress = 50, Price = 500, Description = "Testing", TicketsSold = 1000 });
-//        context.SaveChanges();
+        _context = new AppDbContext(options);
 
-//        var logger = new LoggerFactory().CreateLogger<EventService>();
+        var logger = new LoggerFactory().CreateLogger<EventService>();
+        var configuration = new ConfigurationBuilder().Build();
 
-//        _eventService = new EventService(context, logger);
-//    }
+        _eventService = new EventService(_context, logger, configuration);
+    }
 
-//    [Fact]
-//    public async Task CreateAsync__Should__AddEvent()
-//    {
-//        // Arrange
-//        var newEvent = new CreateEventDto
-//        {
-//            Title = "Test 1",
-//            Category = "Concert",
-//            Date = DateTime.Now,
-//            Location = "Stockholm",
-//            Status = "Active",
-//            Progress = 20,
-//            Price = 200,
-//            Description = "Testing",
-//        };
+    [Fact]
+    public async Task CreateAsync_Should_Add_Event()
+    {
+        // Arrange
+        var createDto = new CreateEventDto
+        {
+            Title = "Concert Event",
+            Category = EventCategory.Concert,
+            Date = DateTime.UtcNow,
+            Location = "Stockholm",
+            Status = "Active",
+            Progress = 50,
+            Price = 199,
+            Description = "Awesome concert",
+            MaxTickets = 500
+        };
 
-//        // Act
-//        var result = await _eventService.CreateAsync(newEvent);
+        // Act
+        var result = await _eventService.CreateAsync(createDto);
 
-//        // Assert
-//        result.Should().BeTrue();
-//    }
+        // Assert
+        result.Should().BeTrue();
+    }
 
-//    [Fact]
-//    public async Task GetAllAsync__Should__ReturnAllEvents()
-//    {
+    [Fact]
+    public async Task GetAllAsync_Should_Return_Events()
+    {
+        // Arrange
+        await SeedEvent();
 
-//        // Act
-//        var result = await _eventService.GetAllAsync();
+        // Act
+        var result = await _eventService.GetAllAsync();
 
-//        // Assert
-//        result.Count().Should().Be(2);
+        // Assert
+        result.Should().NotBeNull();
+    }
 
-//    }
+    [Fact]
+    public async Task GetByIdAsync_Should_Return_Event()
+    {
+        // Arrange
+        var seeded = await SeedEvent();
 
-//    [Fact]
-//    public async Task GetByIdAsync__Should__ReturnCorrectEvent()
-//    {
-            
-//        // Act
-//        var result = await _eventService.GetByIdAsync(1);
+        // Act
+        var result = await _eventService.GetByIdAsync(seeded.Id);
 
-//        // Assert
-//        result!.Title.Should().Be("Test 1");
+        // Assert
+        result.Should().NotBeNull();
+    }
 
-//    }
+    [Fact]
+    public async Task UpdateAsync_Should_Update_Event()
+    {
+        // Arrange
+        var seeded = await SeedEvent();
 
+        var updateDto = new UpdateEventDto
+        {
+            Id = seeded.Id,
+            Title = "Updated Event",
+            Category = EventCategory.Sport,
+            Date = DateTime.UtcNow,
+            Location = "Gothenburg",
+            Status = "Cancelled",
+            Progress = 75,
+            Price = 499,
+            Description = "Updated description",
+            MaxTickets = 1000,
+            Packages = []
+        };
 
-//    [Fact]
-//    public async Task UpdateAsync__Should__UpdateEvent()
-//    {
-//        // Arrange
-//        // Arrange
-//        var existing = new UpdateEventDto
-//        {
-//            Title = "Test 1",
-//            Category = "Concert",
-//            Date = DateTime.Now,
-//            Location = "Stockholm",
-//            Status = "Active",
-//            Progress = 20,
-//            Price = 200,
-//            Description = "Testing",
-//        };
+        // Act
+        var result = await _eventService.UpdateAsync(updateDto);
 
+        // Assert
+        result.Should().BeTrue();
+    }
 
-//        // Act
-//        var result = await _eventService.UpdateAsync(existing);
-//        var updated = await _eventService.GetByIdAsync(1);
+    [Fact]
+    public async Task DeleteAsync_Should_Remove_Event()
+    {
+        // Arrange
+        var seeded = await SeedEvent();
 
+        // Act
+        var result = await _eventService.DeleteAsync(seeded.Id);
 
-//        // Assert
-//        result.Should().BeTrue();
-//        updated!.Title.Should().Be("Updated Title", updated.Title);
-//    }
+        // Assert
+        result.Should().BeTrue();
+    }
 
+    [Fact]
+    public async Task IncreaseTicketsSoldAsync_Should_Increase_Tickets()
+    {
+        // Arrange
+        var seeded = await SeedEvent();
 
-//    [Fact]
-//    public async Task DeleteAsync__Should__RemoveEvent()
-//    {
+        // Act
+        var result = await _eventService.IncreaseTicketsSoldAsync(seeded.Id, 50);
 
-//        // Act
-//        var result = await _eventService.DeleteAsync(1);
+        // Assert
+        result.Should().BeTrue();
+    }
 
-//        // Assert
-//        result.Should().BeTrue();
+    private async Task<EventEntity> SeedEvent()
+    {
+        var entity = new EventEntity
+        {
+            Title = "Seeded Event",
+            Category = EventCategory.Concert,
+            Date = DateTime.UtcNow,
+            Location = "Stockholm",
+            Status = "Active",
+            Progress = 20,
+            Price = 299,
+            Description = "Seed description",
+            TicketsSold = 0,
+            MaxTickets = 500,
+            Packages = []
+        };
 
-
-//    }
-
-
-
-
-
-
-
-//}
+        _context.Events.Add(entity);
+        await _context.SaveChangesAsync();
+        return entity;
+    }
+}

@@ -4,11 +4,13 @@ using EventApp.Interfaces;
 
 namespace EventApp.Services.Media
 {
-    public class CloudinaryImageService : IImageService
+    // Denna service är inklistrad kod från ChatGpt.
+    // Renders gratispaket tillåter inte lagring av bilder utan rensas vid ny deploy. 
+    public class ImageService : IImageService
     {
         private readonly Cloudinary _cloudinary;
 
-        public CloudinaryImageService(IConfiguration config)
+        public ImageService(IConfiguration config)
         {
             var account = new Account(
                 config["CloudinarySettings:CloudName"],

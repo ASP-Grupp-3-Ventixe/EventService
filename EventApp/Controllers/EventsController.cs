@@ -7,11 +7,10 @@ namespace EventApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EventsController(IEventService eventService, ILogger<EventsController> logger, IConfiguration configuration) : ControllerBase
+    public class EventsController(IEventService eventService, ILogger<EventsController> logger) : ControllerBase
     {
         private readonly IEventService _eventService = eventService;
         private readonly ILogger<EventsController> _logger = logger;
-        private readonly IConfiguration _config = configuration;
 
         [HttpGet]
         public async Task<IActionResult> GetAll() => Ok(await _eventService.GetAllAsync());
@@ -85,8 +84,6 @@ namespace EventApp.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "UploadImage failed. Exception: {Message}", ex.Message);
-
                 _logger.LogError(ex, "UploadImage failed.");
                 return StatusCode(500, "Failed to upload image.");
             }

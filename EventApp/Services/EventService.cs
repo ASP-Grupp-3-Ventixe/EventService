@@ -15,7 +15,7 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
     {
         try
         {
-            var entity = new EventEntity
+            var entity = new EventEntity 
             {
                 Title = model.Title,
                 Category = model.Category,
@@ -40,24 +40,6 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         {
             _logger.LogError(ex, " CreateAsync failed. Data: {@model}", model);
             throw;
-        }
-    }
-
-    public async Task<bool> IncreaseTicketsSoldAsync(int eventId, int quantity)
-    {
-        try
-        {
-            var entity = await _context.Events.FindAsync(eventId);
-            if (entity == null) return false;
-
-            entity.TicketsSold += quantity;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to increase TicketsSold for eventId {EventId}", eventId);
-            return false;
         }
     }
 
@@ -188,7 +170,6 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         };
     }
 
-
     public async Task<bool> UpdateAsync(UpdateEventDto model)
     {
         try
@@ -234,6 +215,24 @@ public class EventService(AppDbContext context, ILogger<EventService> logger, IC
         catch (Exception ex)
         {
             _logger.LogError(ex, "DeleteAsync failed.");
+            return false;
+        }
+    }
+
+    public async Task<bool> IncreaseTicketsSoldAsync(int eventId, int quantity)
+    {
+        try
+        {
+            var entity = await _context.Events.FindAsync(eventId);
+            if (entity == null) return false;
+
+            entity.TicketsSold += quantity;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to increase TicketsSold for eventId {EventId}", eventId);
             return false;
         }
     }
