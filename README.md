@@ -1,9 +1,9 @@
 # 🎟️ EventServiceProvider
-
+---
 ## 🧠 AI-användning
 
 ***Denna README är delvis genererad med ChatGPT enligt mina instruktioner gällande innehåll och struktur.***
-
+---
 Detta är ett delsystem som ansvarar för att hantera event-data: skapa, uppdatera, hämta och radera event inklusive tillhörande paket och bilduppladdning via Cloudinary. Det är ett fristående backend-API som är publicerat live via Render, och används av frontend-projektet i gruppen.
 
 ## 📌 Funktioner
