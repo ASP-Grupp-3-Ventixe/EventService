@@ -101,7 +101,6 @@ namespace EventApp.Controllers
             return Ok(result);
         }
 
-
         [HttpPost("increase-tickets")]
         public async Task<IActionResult> IncreaseTicketsSold(int eventId, int quantity)
         {
